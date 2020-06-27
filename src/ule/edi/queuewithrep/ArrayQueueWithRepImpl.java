@@ -109,10 +109,7 @@ public class ArrayQueueWithRepImpl<T> implements QueueWithRep<T> {
 				// TODO Auto-generated method stub
 				if(element == null) 
 					throw new NullPointerException();
-				
-				if(times <= 0)
-					throw new IllegalArgumentException();
-				
+
 				if(!(contains(element))) {
 					if(this.count == data.length)
 						expandCapacity();
@@ -149,17 +146,14 @@ public class ArrayQueueWithRepImpl<T> implements QueueWithRep<T> {
 				if(element == null) 
 					throw new NullPointerException();
 				
-				if(times < 0)
-					throw new IllegalArgumentException();
+				if(times < 0) return 0;
 				
 				int pos = posElement(element);
 				
 				if(pos == -1) 
 					throw new NoSuchElementException();
 
-				if(this.data[pos].getTimes() <= times) {
-					throw new IllegalArgumentException();
-				}	
+				if(this.data[pos].getTimes() <= times) return 0;
 				this.data[pos].setTimes(this.data[pos].getTimes() - times);
 			}
 
@@ -239,7 +233,7 @@ public class ArrayQueueWithRepImpl<T> implements QueueWithRep<T> {
 			}
 			
 			private int posElement(T element) {
-				int pos = -1;
+				int pos = -1;  //puesto que empieza en 1 y no en 0
 
 				for(int i = 0; i < this.count; i++) {
 					if(this.data[i].getElement().equals(element))
@@ -252,34 +246,24 @@ public class ArrayQueueWithRepImpl<T> implements QueueWithRep<T> {
 			@Override
 			public Iterator<T> iterator() {
 				return new ArrayQueueWithRepIterator<T>(this.data, this.count);
-				// TODO Auto-generated method stub
-				
 			}
 			
 			@Override
 			public String toString() {
 				
-				final StringBuffer buffer = new StringBuffer();
+				final StringBuffer output = new StringBuffer();
 				
-				buffer.append("(");
-
-				// TODO Ir añadiendo en buffer las cadenas para la representación de esta cola
+				output.append("(");
 
 				for(int i = 0; i < this.count; i++) {
-					for(int w = 0; w < this.data[i].getTimes(); w++) {
-						buffer.append(this.data[i].getElement() + " ");
+					for(int j = 0; j < this.data[i].getTimes(); j++) {
+						output.append(this.data[i].getElement() + " ");
 					}
 				}
 				
-				buffer.append(")");
+				output.append(")");
 				
-				return buffer.toString();
+				return output.toString();
 			}
-	
-
-//
-//
-//	
-
 	
 }
