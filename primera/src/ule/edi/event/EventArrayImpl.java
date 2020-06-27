@@ -81,14 +81,14 @@ public Byte getDiscountAdvanceSale() {
 @Override
 public int getNumberOfSoldSeats() {
 	// TODO Auto-generated method stub
-	int vendidos = 0;
+	int seats = 0;
 	
 	for(int i = 0; i < nSeats; i++) {
 		if(seats[i] != null)
-			vendidos ++;
+			seats ++;
 	}
 	
-	return vendidos;
+	return seats;
 }
 
 
@@ -130,14 +130,14 @@ public int getNumberOfSeats() {
 @Override
 public int getNumberOfAvailableSeats() {
 	// TODO Auto-generated method stub
-	int asientoLibre = 0;
+	int freeSeats = 0;
 	
 	for(int i = 0; i < nSeats; i++) {
 		if(seats[i] == null)
-			asientoLibre ++;
+			freeSeats ++;
 	}
 	
-	return asientoLibre;
+	return freeSeats;
 }
 
 
@@ -170,15 +170,11 @@ public boolean sellSeat(int pos, Person p, boolean advanceSale) {
 	// TODO Auto-generated method stub
 	if(seats[pos - 1] == null) {
 		
-		Type tipoVenta = null;
-		
 		if(advanceSale == true) {
-			tipoVenta = Configuration.Type.ADVANCE_SALE;
+			seats[pos - 1] = new Seat(this, pos, Configuration.Type.ADVANCE_SALE, p);
 		} else {
-			tipoVenta = Configuration.Type.NORMAL;
+			seats[pos - 1] = new Seat(this, pos, Configuration.Type.NORMAL, p);	
 		}
-		
-		seats[pos - 1] = new Seat(this, pos, tipoVenta, p);
 		return true;
 	}
 	return false;
@@ -188,44 +184,43 @@ public boolean sellSeat(int pos, Person p, boolean advanceSale) {
 @Override
 public int getNumberOfAttendingChildren() {
 	// TODO Auto-generated method stub
-	int childrenNumber = 0;
-	
+	int numberChildren = 0;
 	for(int i = 0; i < nSeats; i++) {
 		if(seats[i] != null && seats[i].getHolder().getAge() <= Configuration.CHILDREN_EXMAX_AGE)
-			childrenNumber ++;
+			numberChildren ++;
 	}
 	
-	return childrenNumber;
+	return numberChildren;
 }
 
 
 @Override
 public int getNumberOfAttendingAdults() {
 	// TODO Auto-generated method stub
-	int adultsNumber = 0;
+	int numberAdults = 0;
 	
 	for(int i = 0; i < nSeats; i++) {
 		if(seats[i] != null
 		&& seats[i].getHolder().getAge() > Configuration.CHILDREN_EXMAX_AGE
 		&& seats[i].getHolder().getAge() < Configuration.ELDERLY_PERSON_INMIN_AGE)
-			adultsNumber ++;
+			numberAdults ++;
 	}
 	
-	return adultsNumber;
+	return numberAdults;
 }
 
 
 @Override
 public int getNumberOfAttendingElderlyPeople() {
 	// TODO Auto-generated method stub
-	int elderNumber = 0;
+	int numberElder = 0;
 	
 	for(int i = 0; i < nSeats; i++) {
 		if(seats[i] != null && seats[i].getHolder().getAge() >= Configuration.ELDERLY_PERSON_INMIN_AGE)
-			elderNumber ++;
+			numberElder ++;
 	}
 	
-	return elderNumber;
+	return numberElder;
 }
 
 
@@ -233,104 +228,104 @@ public int getNumberOfAttendingElderlyPeople() {
 public List<Integer> getAvailableSeatsList() {
 	// TODO Auto-generated method stub
 	
-	List<Integer> asientosVacios = new ArrayList<Integer>();
+	List<Integer> free = new ArrayList<Integer>();
 	
 	for(int i = 0; i < nSeats; i++) {
 		if(seats[i] != null)
-			asientosVacios.add(i + 1);
+			free.add(i + 1);
 	}
 	
-	return asientosVacios;
+	return free;
 }
 
 
 @Override
 public List<Integer> getAdvanceSaleSeatsList() {
 	// TODO Auto-generated method stub
-	List<Integer> asientosPreventa = new ArrayList<Integer>();
+	List<Integer> advancedSaleSeats = new ArrayList<Integer>();
 	
 	for(int i = 0; i < nSeats; i++) {
 		if(seats[i] != null && seats[i].getType() == Configuration.Type.ADVANCE_SALE)
-			asientosPreventa.add(i + 1);
+			advancedSaleSeats.add(i + 1);
 	}
 	
-	return asientosPreventa;
+	return advancedSaleSeats;
 }
 
 
 @Override
 public int getMaxNumberConsecutiveSeats() {
 	// TODO Auto-generated method stub
+	int aux = 0;
 	int consecutivos = 0;
-	int nuevoConsecutivos = 0;
 	
 	for(int i = 0; i < nSeats; i++) {
 		if(seats[i] == null) {
-			consecutivos ++;
+			aux ++;
 		} else {
 			
-			if(nuevoConsecutivos < consecutivos) {
-				nuevoConsecutivos = consecutivos;
-				consecutivos = 0;
+			if(consecutivos < aux) {
+				consecutivos = aux;
+				aux = 0;
 			}
 		}
 	}
 	
-	if(nuevoConsecutivos < consecutivos) {
-		nuevoConsecutivos = consecutivos;
+	if(consecutivos < aux) {
+		consecutivos = aux;
 	}
 	
-	return nuevoConsecutivos;
+	return consecutivos;
 }
 
 
 @Override
 public Double getPrice(Seat seat) {
 	// TODO Auto-generated method stub
-	Double precio = 0.0;
+	Double prize = 0.0;
 	
 	if(this == seat.getEvent()) {
 		
 		if(seat.getType() == Configuration.Type.ADVANCE_SALE) {
-			precio = price - price * (discountAdvanceSale / 100.0);
+			prize = prize - price * (discountAdvanceSale / 100.0);
 			
 		} else {
-			precio = price;
+			prize = price;
 		}
 	}
 	
-	return precio;
+	return prize;
 }
 
 
 @Override
 public Double getCollectionEvent() {
 	// TODO Auto-generated method stub
-	Double recaudado = 0.0;
+	Double collection = 0.0;
 	
 	for(int i = 0; i < nSeats; i++) {
 		if(seats[i] != null)
-			recaudado += this.getPrice(seats[i]);
+			collection += this.getPrice(seats[i]);
 	}
 	
-	return recaudado;
+	return collection;
 }
 
 
 @Override
 public int getPosPerson(Person p) {
 	// TODO Auto-generated method stub
-	int posicion = -1;
+	int pos = -1;
 	int i = 0;
 	
-	while(i < nSeats && posicion == -1) {
+	while(i < nSeats && pos == -1) {
 		if(seats[i] != null && seats[i].getHolder().equals(p) == true)
-			posicion = i + 1;
+			pos = i + 1;
 		
 		i++;
 	}
 	
-	return posicion;
+	return pos;
 }
 
 
@@ -338,14 +333,14 @@ public int getPosPerson(Person p) {
 public boolean isAdvanceSale(Person p) {
 	// TODO Auto-generated method stub
 	
-	boolean venta = false;
+	boolean sale = false;
 	int i = 0;
 	
-	while(i < nSeats && venta == false) {
+	while(i < nSeats && sale == false) {
 		if(seats[i] != null
 		&& seats[i].getHolder().equals(p) == true
 		&& seats[i].getType() == Configuration.Type.ADVANCE_SALE)
-			venta = true;
+			sale = true;
 		
 		i++;
 	}
