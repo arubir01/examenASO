@@ -43,31 +43,31 @@ public abstract class AbstractQueueWithRefTests {
 	}
 
 	@Test
-	public void testToStringInEmpty() {
+	public void testToStringIsEmpty() {
 		assertTrue(S1.isEmpty());
 		assertEquals(S1.toString(), "()");
 	}
 	
 	@Test
-	public void testToString1elem() {
+	public void testToStringElem() {
 		assertTrue(S1.isEmpty());
-		S1.add("A",3);
-		assertEquals(S1.toString(), "(A A A )");
+		S1.add("Z",2);
+		assertEquals(S1.toString(), "(Z Z )");
 	}
 	
 	@Test
-	//Añadir elementos con una multiplicidad incrementa su contador y el tamaño de la cola: ")
+	
 	public void testAddWithCount() {
-		S1.add("ABC", 5);
-		assertEquals(S1.count("ABC"), 5);
-		assertEquals(S1.size(), 5);
-		S1.add("ABC", 5);
-		assertEquals(S1.count("ABC"), 10);
-		assertEquals(S1.size(), 10);
-		S1.add("123", 5);		
-		assertEquals(S1.count("123"), 5);
-		assertEquals(S1.count("ABC"), 10);
-		assertEquals(S1.size(), 15);
+		S1.add("ABC", 2);
+		assertEquals(S1.count("ABC"), 2);
+		assertEquals(S1.size(), 2);
+		S1.add("ABC", 2);
+		assertEquals(S1.count("ABC"), 4);
+		assertEquals(S1.size(), 4);
+		S1.add("123", 2);		
+		assertEquals(S1.count("123"), 2);
+		assertEquals(S1.count("ABC"), 4);
+		assertEquals(S1.size(), 6);
 	}
 	
 	
@@ -85,47 +85,48 @@ public abstract class AbstractQueueWithRefTests {
 	
 	@Test
 	public void addTimes() {
-		S1.add("ABD", 2);
-		S1.add("ABC", 2);
-		S1.add("ABD", 2);
-		S1.add("ABC", 5);
+		S1.add("AAA", 2);
+		S1.add("BBB", 3);
+		S1.add("CCC", 4);
+		S1.add("DDD", 5);
 	}
 	
 	@Test
 	public void addExpandsSize() {
 		QueueWithRep<String> S5 = new ArrayQueueWithRepImpl(1);
 		S5.add("ABC", 2);
-		S5.add("ABD", 2);
-		S5.add("ABC", 2);
+		S5.add("DFG", 2);
+		S5.add("HIJ", 2);
 	}
 	
 	@Test (expected = NullPointerException.class)
-	public void addBad() {
+	public void addNull() {
 		S1.add(null, 5);
 	}
+	
 	@Test (expected = IllegalArgumentException.class)
-	public void addBad2() {
+	public void addNegative() {
 		S1.add("ABC", -10);
 	}
 	
 	@Test
-	public void addNoTimes() {
-		S1.add("ABD");
-		S1.add("ABC");
-		S1.add("ABD");
-		S1.add("ABC");
+	public void add0Times() {
+		S1.add("AAA");
+		S1.add("BBB");
+		S1.add("CCC");
+		S1.add("DDD");
 	}
 	
 	@Test (expected = NullPointerException.class)
-	public void addNoTimesBad() {
+	public void add0TimesNull() {
 		S1.add(null);
 	}
 	
 	@Test
-	public void addNoTimesExpandsSize() {
+	public void add0TimesExpandsSize() {
 		QueueWithRep<String> S5 = new ArrayQueueWithRepImpl(1);
-		S5.add("ABC");
-		S5.add("ABD");
+		S5.add("AAA");
+		S5.add("BBB");
 	}
 	
 	@Test
@@ -137,33 +138,33 @@ public abstract class AbstractQueueWithRefTests {
 	
 	@Test
 	public void remove() {
-		S1.add("ABC", 5);
-		S1.remove("ABC", 3);
+		S1.add("AAA", 3);
+		S1.remove("AAA", 1);
 		assertEquals(S1.size(), 2);
 	}
 	
 	@Test
 	public void remove2() {
-		S1.add("ABC", 5);
+		S1.add("ZZZ", 4);
 		S1.add("A", 5);
-		S1.remove("ABC", 3);
-		assertEquals(S1.size(), 7);
+		S1.remove("ZZZ", 3);
+		assertEquals(S1.size(), 6);
 	}
 
 	@Test (expected = IllegalArgumentException.class)
-	public void removeBad1() {
-		S1.add("ABC", 5);
-		S1.remove("ABC", 5);
+	public void removeAllException() {
+		S1.add("AAA", 1);
+		S1.remove("AAA", 1);
 	}
 	
 	@Test (expected = NullPointerException.class)
-	public void removeBad2() {
+	public void removeNull() {
 		S1.remove(null, 3);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
-	public void removeBad3() {
-		S1.remove("ABC", -55);
+	public void removeIllegaltimes() {
+		S1.remove("ZZZ", -55);
 	}
 	
 	@Test (expected = NullPointerException.class)
@@ -178,11 +179,11 @@ public abstract class AbstractQueueWithRefTests {
 	
 	@Test
 	public void removeFirst() throws EmptyCollectionException {
-		S1.add("A", 2);
-		S1.add("B", 2);
-		S1.add("C", 2);
+		S1.add("F", 5);
+		S1.add("N", 4);
+		S1.add("C", 3);
 		
-		assertEquals(S1.remove(), 2);
+		assertEquals(S1.remove(), 5);
 	}
 	
 	@Test (expected = EmptyCollectionException.class)
