@@ -55,8 +55,6 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 	private class DobleLinkedListIterator<T> implements Iterator<T> {
 		  // añadir atributos
 		private DoubleNode<T> current;
-	 
-		
        	
 		public DobleLinkedListIterator(DoubleNode<T> nodo) {
 			// todo
@@ -65,7 +63,7 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 		
 		@Override
 		public boolean hasNext() {
-			return(this.current != null);
+			return (this.current != null);
 		}
 
 		@Override
@@ -87,9 +85,7 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 	private class DobleLinkedListReverseIterator<T> implements Iterator<T> {
 		  // añadir atributos
 		private DoubleNode<T> current;
-	 
-		
-       	
+
 		public DobleLinkedListReverseIterator(DoubleNode<T> nodo) {
 			// todo
 			this.current = nodo;
@@ -115,9 +111,7 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 	private class DobleLinkedListParIterator<T> implements Iterator<T> {
 		  // añadir atributos
 		private DoubleNode<T> current;
-	 
-		
-       	
+
 		public DobleLinkedListParIterator(DoubleNode<T> nodo) {
 			// todo
 			this.current = nodo;
@@ -146,9 +140,7 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 		  // añadir atributos
 		private DoubleNode<T> current;
 		int pos;
-	 
 		
-       	
 		public DobleLinkedListProgressIterator(DoubleNode<T> nodo) {
 			// todo
 			this.current = nodo;
@@ -170,7 +162,7 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 				i ++;
 			}
 			
-			this.pos ++;
+			this.pos++;
 			return result;
 			
 		}
@@ -196,14 +188,16 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 
 	@Override
 	public void clear() {
-		DoubleNode<T> elemento = this.front;
+		DoubleNode<T> aux = this.front;
 		
-		while(elemento != this.last) {
-			elemento = elemento.getNextElement();
+		while(aux.elem != this.last.elem) {
 			
-			elemento.getPrevElement().setNextElement(null);
-			elemento.setPrevElement(null);
+			aux.elem = aux.next.elem;
+			aux.elem = null;
+			aux.prev.elem = null;
+			
 		}
+		
 		this.front = null;
 		this.last = null;
 	}
@@ -214,47 +208,60 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 		if(elem == null)
 			throw new NullPointerException();
 		
-		DoubleNode<T> elemento = new DoubleNode<T>(elem);
+		DoubleNode<T> new = new DoubleNode<T>(elem);
 		
 		if(this.front == null) {
-			this.front = elemento;
-			this.last = elemento;
+			
+			this.front = new;
+			this.last = new;
 			
 		} else {
 			
-			this.front.setPrevElement(elemento);
-			elemento.setNextElement(this.front);
+			DoubleNode<T> aux = this.last;
 			
-			this.front = elemento;
+			while(aux.prev != null){
+				
+				aux = aux.prev;
+				
+			}
+			new.next = aux;
+			this.front = new;
 		}
 	}
 
 
 	@Override
 	public void insertLast(T elem) {
-		if(elem == null)
-			throw new NullPointerException();
+		if(elem == null) throw new NullPointerException();
 		
-		DoubleNode<T> elemento = new DoubleNode<T>(elem);		
+		DoubleNode<T> aux = new DoubleNode<T>(elem);		
 		
 		if(this.last == null) {
-			this.front = elemento;
-			this.last = elemento;
+			this.front = aux;
+			this.last = aux;
 			
 		} else {
 			
-			this.last.setNextElement(elemento);
-			elemento.setPrevElement(this.last);
+			DoubleNode<T> aux = this.front;
 			
-			this.last = elemento;
+			while(aux.next != null){
+				
+				aux = aux.next;
+				
+			}
+			
+			new.prev = aux;
+			this.last = new;
 		}
 	}
 
 
 	@Override
 	public T removeFirst() throws EmptyCollectionException{
-		if(isEmpty())
-			throw new EmptyCollectionException("");
+		
+		T result;
+		
+		if(isEmpty()) throw new EmptyCollectionException("");
 		
 		DoubleNode<T> elemento = this.front;
 		
@@ -264,37 +271,61 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 			
 		} else {
 			
-			elemento.getNextElement().setPrevElement(null);
-			this.front = elemento.getNextElement();
+			DoubleNode<T> first = this.last;
+			
+			while(first.prev.prev != null){
+				
+				first = first.prev;
+				
+			}
+			
+			result = first.prev.elem;
+			first.prev = null;
+			this.front = first;
 		}
 		
-		return elemento.getElement();
+		return result;
 	}
 
 
 	@Override
 	public T removeLast() throws EmptyCollectionException{
+		
+		T result;
+		
 		if(isEmpty())
 			throw new EmptyCollectionException("");
 		
-		DoubleNode<T> elemento = this.last;
+		DoubleNode<T> new = this.last;
 		
 		if(this.front == this.last) {
+			
 			this.front = null;
 			this.last = null;
 			
 		} else {
 			
-			elemento.getPrevElement().setNextElement(null);
-			this.last = elemento.getPrevElement();
+			DoubleNode<T> last = this.front;
+			
+			while(last.next.next != null){
+				
+				last = last.next;
+				
+			}
+			
+			result = last.next.elem;
+			last.next = null;
+			this.last = last;
+			
 		}
 		
-		return elemento.getElement();
+		return result;
 	}
 
 
 	@Override
 	public void insertPos(T elem, int position) {
+		
 		if(position <= 0)
 			throw new IllegalArgumentException();
 		
@@ -309,19 +340,23 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 			
 		} else {
 
-			DoubleNode<T> insertar = new DoubleNode<T>(elem);
-			DoubleNode<T> elemento = this.front;
+			DoubleNode<T> new = new DoubleNode<T>(elem);
+			DoubleNode<T> aux = this.front;
 			
 			for(int i = 1; i <= position; i++) {
 				
 				if(i == position) {
-					insertar.setNextElement(elemento);
-					insertar.setPrevElement(elemento.getPrevElement());
+					
+					new.next.elem = aux.elem;
+					new.prev.elem = aux.prev.elem;
 				
-					elemento.setPrevElement(insertar);
-					insertar.getPrevElement().setNextElement(insertar);
+					aux.setPrevElement(new);
+					aux.prev.elem = new.elem;
+					new.elem = elem;
+
 				}
-				elemento = elemento.getNextElement();
+				
+				aux = aux.getNextElement();
 			}
 			
 		}
@@ -330,162 +365,178 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 
 	@Override
 	public void insertBefore(T elem, T target) {
+		
 		if(elem == null || target == null)
 			throw new NullPointerException();
 		
 		if(!contains(target))
 			throw new NoSuchElementException();
 		
-		DoubleNode<T> insertar = new DoubleNode<T>(elem);
-		DoubleNode<T> elemento = this.front;
+		DoubleNode<T> new = new DoubleNode<T>(elem);
+		DoubleNode<T> aux = this.front;
 		
 		for(int i = 1; i <= this.size(); i++) {
-			if(target.equals(elemento.getElement())) {
+			
+			if(target.equals(aux.getElement())) {
 				if(i == 1) {
 					this.insertFirst(elem);
 					
 				} else {
-					insertar.setNextElement(elemento);
-					insertar.setPrevElement(elemento.getPrevElement());
-				
-					elemento.setPrevElement(insertar);
-					insertar.getPrevElement().setNextElement(insertar);
+
+					new.next.elem = aux.elem;
+					new.prev.elem = aux.prev.elem;
+					aux.prev.elem = new.elem;
+					new.elem = elem;
+
 				}
 				break;
 			}
 			
-			elemento = elemento.getNextElement();
+			aux.elem = aux.next.elem;
 		}
 	}
 
 
 	@Override
 	public T getElemPos(int position) {
+		
 		if(position <= 0 || position > size())
 			throw new IllegalArgumentException();
 
-		DoubleNode<T> elemento = this.front;
+		DoubleNode<T> aux = this.front;
 		
 		for(int i = 1; i < position; i++) {
-			elemento = elemento.getNextElement();
+			aux = aux.next;
 		}
 		
-		return elemento.getElement();
+		return aux.elem;
 	}
 
 
 	@Override
 	public int getPosFirst(T elem) {
-		if(elem == null)
-			throw new NullPointerException();
 		
-		if(!contains(elem))
-			throw new NoSuchElementException();
+		if(elem == null) throw new NullPointerException();
+		
+		if(!contains(elem)) throw new NoSuchElementException();
 
-		DoubleNode<T> elemento = this.front;
+		DoubleNode<T> aux = this.front;
 		int i = 1;
 		
-		while(elem.equals(elemento.getElement()) == false) {
-			elemento = elemento.getNextElement();
+		while(elem.equals(aux.getElement()) == false) {
+			
+			aux.elem = aux.next.elem;
 			i++;
+			
 		}
+		
 		return i;
 	}
 
 
 	@Override
 	public int getPosLast(T elem) {
-		if(elem == null)
-			throw new NullPointerException();
+		if(elem == null) throw new NullPointerException();
 		
-		if(!contains(elem))
-			throw new NoSuchElementException();
+		if(!contains(elem)) throw new NoSuchElementException();
 
-		DoubleNode<T> elemento = this.last;
+		DoubleNode<T> aux = this.last;
 		int i = this.size();
 		
-		while(elem.equals(elemento.getElement()) == false) {
-			elemento = elemento.getPrevElement();
+		while(elem.equals(aux.elem) == false) {
+			
+			aux.elem = aux.prev.elem;
 			i--;
+			
 		}
+		
 		return i;
 	}
 
 
 	@Override
 	public T removePos(int pos) {
+		
 		if(pos <= 0 || pos > size())
 			throw new IllegalArgumentException();
 		
-		DoubleNode<T> elemento;
+		DoubleNode<T> aux;
 		
 		if(pos == 1) {
-			elemento = this.front;
+			aux = this.front;
 			
 			if(this.front == this.last) {
+				
 				this.front = null;
 				this.last = null;
 				
 			} else {
 				
-				elemento.getNextElement().setPrevElement(null);
-				this.front = elemento.getNextElement();
+				aux.elem = null;
+				this.front = aux.next.elem;
 			}
 			
 		} else if(pos == size()) {
-			elemento = this.last;
 			
-			elemento.getPrevElement().setNextElement(null);
-			this.last = elemento.getPrevElement();
+			aux = this.last;
+			aux.elem = null;
+			this.last = aux.prev.elem;
 			
 		} else {
-			elemento = this.front;
+			aux = this.front;
 
 			for(int i = 1; i <= pos; i++) {
 			
 				if(i == pos) {
-					DoubleNode<T> anterior = elemento.getPrevElement();
-					DoubleNode<T> posterior = elemento.getNextElement();
+					
+					DoubleNode<T> previous = aux.getPrevElement();
+					DoubleNode<T> next = aux.getNextElement();
 				
-					anterior.setNextElement(posterior);
-					posterior.setPrevElement(anterior);
-				
+					previous.next.elem = next.elem;
+					next.prev.elem = previous.elem;
+					
 					break;
 				}
-				elemento = elemento.getNextElement();
+				
+				aux.elem = aux.next.elem;
 			}
 		}
 		
-		return elemento.getElement();
+		return aux.elem;
 	}
 
 
 	@Override
 	public int removeAll(T elem) {
+		
 		if(elem == null)
 			throw new NullPointerException();
 		
-		if(!contains(elem))
-			throw new NoSuchElementException();
+		if(!contains(elem)) throw new NoSuchElementException();
 		
 		int pos = 1;
-		int apariciones = 0;
-		DoubleNode<T> elemento = this.front;
+		int times = 0;
+		
+		DoubleNode<T> aux = this.front;
 
-		while(elemento != null) {
-			if(elem.equals(elemento.getElement())) {
-				elemento = elemento.getNextElement();
+		while(aux.elem != null) {
+			
+			if(elem.equals(aux.elem)) {
+				
+				aux.elem = aux.next.elem;
 				
 				removePos(pos);
-				apariciones ++;
+				
+				times ++;
 				
 			} else {
-				elemento = elemento.getNextElement();
+				
+				aux.elem = aux.next.elem;
 				pos++;
 			}
 		}
 		
-		return apariciones;
+		return times;
 	}
 
 
@@ -494,13 +545,13 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 		if(elem == null)
 			throw new NullPointerException();
 
-		DoubleNode<T> elemento = this.front;
+		DoubleNode<T> aux = this.front;
 		
 		for(int i = 1; i <= size(); i++) {
-			if(elem.equals(elemento.getElement()))
-				return true;
+			
+			if(elem.equals(aux.elem)) return true;
 
-			elemento = elemento.getNextElement();
+			aux.elem = aux.next.elem;
 		}
 		
 		return false;
@@ -510,10 +561,10 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 	@Override
 	public int size() {
 		int total = 0;
-		DoubleNode<T> elemento = this.front;
+		DoubleNode<T> aux = this.front;
 		
-		while(elemento != null) {
-			elemento = elemento.getNextElement();
+		while(aux.elem != null) {
+			aux.elem = aux.next.elem;
 			total ++;
 		}
 		
@@ -523,99 +574,118 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 
 	@Override
 	public String toStringReverse() {
-		StringBuilder texto = new StringBuilder();
-		DoubleNode<T> elemento = this.last;
 		
-		texto.append("(");
+		StringBuilder output = new StringBuilder();
+		DoubleNode<T> aux = this.last;
 		
-		while(elemento != null) {
-			texto.append(elemento.getElement() + " ");
-			elemento = elemento.getPrevElement();
+		output.append("(");
+		
+		while(aux.elem != null) {
+			
+			output.append(aux.elem + " ");
+			aux.elem = aux.prev.elem;
 		}
-		texto.append(")");
-		return texto.toString();
+		
+		output.append(")");
+		return output.toString();
 	}
 
 	@Override
 	public int maxRepeated() {
-		int repeticiones = 1;
-		int maxApariciones = 1;
+		
+		int repeated = 1;
+		int max = 1;
 
-		DoubleNode<T> comparar;
-		DoubleNode<T> elemento = this.front;
+		DoubleNode<T> rep;
+		DoubleNode<T> aux = this.front;
 
 		for(int i = 1; i < size(); i++) {
-			comparar = elemento.getNextElement();
+			
+			rep.elem = aux.next.elem;
+			
 			for(int w = i + 1; w <= size(); w++) {
 				
-				if(elemento.getElement().equals(comparar.getElement())) {
-					repeticiones++;
+				if(aux.elem.equals(rep.elem)) {
+					
+					repeated++;
+					
 				}
-				comparar = comparar.getNextElement();
+				
+				rep.elem = rep.next.elem;
 			}
-			elemento = elemento.getNextElement();
 			
-			if(repeticiones > maxApariciones) {
-				maxApariciones = repeticiones;
-				repeticiones = 0;
+			aux = aux.next.elem;
+			
+			if(repeated > max) {
+				
+				max = repeated;
+				repeated = 0;
 			}
 		}
 		
-		return maxApariciones;
+		return max;
 	}
 
 	@Override
 	public String toStringFromUntil(int from, int until) {
-		if(from <= 0 || until <= 0 || until <= from)
-			throw new IllegalArgumentException();
 		
-		StringBuilder texto = new StringBuilder();
+		if(from <= 0 || until <= 0 || until <= from) throw new IllegalArgumentException();
+		
+		StringBuilder output = new StringBuilder();
 		
 		if(from  > this.size()) {
-			texto.append("()");
+			output.append("()");
 			
 		} else if(until > this.size()) {
 
-			DoubleNode<T> elemento = this.front;
+			DoubleNode<T> aux = this.front;
 
-			texto.append("(");
+			output.append("(");
+			
 			for(int i = 1; i <= size(); i++) {
 				
-				if(i >= from) texto.append(elemento.getElement() + " ");
-				elemento = elemento.getNextElement();
+				if(i >= from) output.append(aux.elem + " ");
+				aux.elem = elemento.next.elem;
 			}
-			texto.append(")");
+			
+			output.append(")");
 			
 		} else {
 
-			DoubleNode<T> elemento = this.front;
-
-			texto.append("(");
+			DoubleNode<T> aux = this.front;
+			
+			output.append("(");
+			
 			for(int i = 1; i <= size(); i++) {
 				
-				if(i >= from && i <= until) texto.append(elemento.getElement() + " ");
-				elemento = elemento.getNextElement();
+				if(i >= from && i <= until) output.append(aux.elem + " ");
+				aux.elem = aux.next.elem;
 			}
-			texto.append(")");
+			
+			output.append(")");
 			
 		}
 		
-		return texto.toString();
+		return output.toString();
 	}
 	
 	@Override
 	public String toString() {
-		StringBuilder texto = new StringBuilder();
-		DoubleNode<T> elemento = this.front;
 		
-		texto.append("(");
+		StringBuilder output = new StringBuilder();
+		DoubleNode<T> aux = this.front;
 		
-		while(elemento != null) {
-			texto.append(elemento.getElement() + " ");
-			elemento = elemento.getNextElement();
+		output.append("(");
+		
+		while(aux.elem != null) {
+			
+			output.append(aux.elem + " ");
+			aux.elem = aux.next.elem;
 		}
-		texto.append(")");
-		return texto.toString();
+		
+		output.append(")");
+		
+		return output.toString();
 	}
 
 	@Override
@@ -641,20 +711,23 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 
 	@Override
 	public DoubleList<T> reverse() {
-		DoubleList<T> lista = new DoubleLinkedListImpl<T>();
 		
-		DoubleNode<T> elemento = this.last;
+		DoubleList<T> list = new DoubleLinkedListImpl<T>();
 		
-		while(elemento != null) {
-			lista.insertLast(elemento.getElement());
-			elemento = elemento.getPrevElement();
+		DoubleNode<T> aux = this.last;
+		
+		while(aux.elem != null) {
+			
+			list.insertLast(aux.elem);
+			aux.elem = aux.prev.elem;
 		}
 		
-		return lista;
+		return list;
 	}
 	
 	@Override
 	public boolean isEquals(DoubleList<T> other) {
+		
 		if(other == null) 
 			throw new NullPointerException();
 		
@@ -663,15 +736,15 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 			
 		} else {	
 
-			Iterator<T> iterador = this.iterator();
-			Iterator<T> iterador2 = other.iterator();
+			Iterator<T> iterator = this.iterator();
+			Iterator<T> aux = other.iterator();
 			
-			while(iterador2.hasNext() == true) {
+			while(aux.hasNext() == true) {
 
-				T siguiente1 = iterador.next();
-				T siguiente2 = iterador2.next();
+				T next1 = iteratorv.next();
+				T next2 = aux.next();
 				
-				if(siguiente1.equals(siguiente2) == false) {
+				if(next1.equals(next2) == false) {
 					return false;
 				}
 			}
@@ -683,32 +756,34 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 
 	@Override
 	public boolean containsAll(DoubleList<T> other) {
+		
 		if(other == null) 
 			throw new NullPointerException();
 
-		Iterator<T> iterador;
-		Iterator<T> iterador2 = other.iterator();
+		Iterator<T> iterator;
+		Iterator<T> aux = other.iterator();
 		
-		boolean contiene = false;
+		boolean contains = false;
 		
-		while(iterador2.hasNext() == true) {
-			T siguiente2 = iterador2.next();
+		while(aux.hasNext() == true) {
 			
-			iterador = this.iterator();
+			T next2 = aux.next();
+			
+			iterator = this.iterator();
 
-			while(contiene == false && iterador.hasNext() == true) {
-				T siguiente1 = iterador.next();
+			while(contiene == false && iterator.hasNext() == true) {
+				T next1 = iterator.next();
 
-				if(siguiente1.equals(siguiente2)) {
-					contiene = true;
+				if(next1.equals(next2)) {
+					contains = true;
 				}
 			}
 			
-			if(contiene == false) {
+			if(contains == false) {
 				return false;
 				
 			} else {
-				contiene = false;
+				contains = false;
 			}
 		}
 		
@@ -718,6 +793,7 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 
 	@Override
 	public boolean isSubList(DoubleList<T> other) {
+		
 		if(other == null) 
 			throw new NullPointerException();
 		
@@ -725,69 +801,81 @@ public class DoubleLinkedListImpl<T> implements DoubleList<T> {
 			return true;
 			
 		} else {
-			Iterator<T> iterador = this.iterator();
-			Iterator<T> iterador2 = other.iterator();
+			
+			Iterator<T> iterator = this.iterator();
+			Iterator<T> aux = other.iterator();
 
-			T siguiente = iterador.next();
-			T siguiente2 = iterador2.next();
+			T next1 = iterator.next();
+			T next2 = aux.next();
 			
-			boolean igual = false;
+			boolean equals = false;
 			
-			while(iterador2.hasNext() == true && iterador.hasNext() == true) {
+			while(aux.hasNext() == true && iterator.hasNext() == true) {
 				
-				if(igual == true) {
-					siguiente2 = iterador2.next();
+				if(equals == true) {
+					
+					next2 = aux.next();
 				}
 				
-				if(siguiente.equals(siguiente2)) {
-					igual = true;
+				if(next1.equals(next2)) {
+					
+					equals = true;
 					
 				} else {
-					iterador2 = other.iterator();
-					siguiente2 = iterador2.next();
 					
-					igual = false;
+					aux = other.iterator();
+					next2 = aux.next();
+					
+					equals = false;
 				}
 
-				siguiente = iterador.next();
+				next1 = iterator.next();
 			}
-			return igual;
+			
+			return equals;
 		}
 	}
 	
 	public String evenPositionsIteratorPrueba() {
-		StringBuilder texto = new StringBuilder();
 		
-		Iterator<T> iterador2 = this.evenPositionsIterator();
-		while(iterador2.hasNext() == true) {
+		StringBuilder output = new StringBuilder();
+		Iterator<T> aux = this.evenPositionsIterator();
+		
+		while(aux.hasNext() == true) {
 
-			T siguiente = iterador2.next();
-			texto.append(siguiente + " ");
+			T next1 = aux.next();
+			output.append(next1 + " ");
 		}
-		return texto.toString();
+		
+		return output.toString();
 	}
 	
 	public String reverseIteratorPrueba() {
-		StringBuilder texto = new StringBuilder();
 		
-		Iterator<T> iterador2 = this.reverseIterator();
-		while(iterador2.hasNext() == true) {
+		StringBuilder output = new StringBuilder();
+		Iterator<T> aux = this.reverseIterator();
+		
+		while(aux.hasNext() == true) {
 
-			T siguiente = iterador2.next();
-			texto.append(siguiente + " ");
+			T next1 = aux.next();
+			output.append(next1 + " ");
 		}
-		return texto.toString();
+		
+		return output.toString();
 	}
 	
 	public String progressIteratorPrueba() {
-		StringBuilder texto = new StringBuilder();
 		
-		Iterator<T> iterador2 = this.progressIterator();
-		while(iterador2.hasNext() == true) {
+		StringBuilder output = new StringBuilder();
+		Iterator<T> aux = this.progressIterator();
+		
+		while(aux.hasNext() == true) {
 
-			T siguiente = iterador2.next();
-			texto.append(siguiente + " ");
+			T next = aux.next();
+			output.append(next + " ");
+			
 		}
-		return texto.toString();
+		
+		return output.toString();
 	}
 }
