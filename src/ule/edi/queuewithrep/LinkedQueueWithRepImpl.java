@@ -94,13 +94,9 @@ public class LinkedQueueWithRepImpl<T> implements QueueWithRep<T> {
 			this.count++;
 			
 		} else {
-			Iterator<T> iterador = this.iterator();
-			while(iterador.hasNext() == true) {
-
-				T siguiente = iterador.next();
-				if(siguiente.equals(element)) {
-					
-					QueueWithRepNode<T> nodo = verNodo(siguiente);
+			QueueWithRepNode<T> aux = this.front;
+			while(aux.next != null) {
+				if(aux.elem.equals(element)) {
 					nodo.setTimes(nodo.getTimes() + 1);
 				}
 			}
@@ -123,13 +119,11 @@ public class LinkedQueueWithRepImpl<T> implements QueueWithRep<T> {
 			this.count++;
 			
 		} else {
-			Iterator<T> iterador = this.iterator();
-			while(iterador.hasNext() == true) {
+			QueueWithRepNode<T> aux = this.front;
+			
+			while(aux.next != null) {
 
-				T siguiente = iterador.next();
-				if(siguiente.equals(element)) {
-					
-					QueueWithRepNode<T> nodo = verNodo(siguiente);
+				if(aux.elem.equals(element)) {
 					nodo.setTimes(nodo.getTimes() + times);
 				}
 			}
@@ -145,23 +139,23 @@ public class LinkedQueueWithRepImpl<T> implements QueueWithRep<T> {
 		
 		int times = 0;
 		
-		QueueWithRepNode<T> empieza = this.front;
-		QueueWithRepNode<T> anterior = null;
+		QueueWithRepNode<T> aux = this.front;
+		QueueWithRepNode<T> last = null;
 		
 		while(empieza != null) {
-			anterior = empieza;
-			empieza = anterior.getNext();
+			last = aux;
+			aux = last.getNext();
 		}
 		
-		times = anterior.getTimes();
+		times = last.getTimes();
 		
-		anterior = this.front;
+		last = this.front;
 			
 		this.front = this.front.getNext();
-		this.front.setNext(anterior);
+		this.front.setNext(last);
 		this.count --;
 		
-		anterior.setNext(null);
+		last.setNext(null);
 		
 		return times;
 	}
@@ -177,13 +171,13 @@ public class LinkedQueueWithRepImpl<T> implements QueueWithRep<T> {
 		
 		boolean found = false;
 
-		QueueWithRepNode<T> empieza = this.front;
+		QueueWithRepNode<T> aux = this.front;
 		
-		while(empieza != null && found == false) {
-			if(empieza.getElement().equals(element)) {
+		while(aux != null && found == false) {
+			if(aux.getElement().equals(element)) {
 				found = true;
 			} else {
-				empieza = front.getNext();
+				aux = aux.next;
 			}
 		}
 		
@@ -191,10 +185,10 @@ public class LinkedQueueWithRepImpl<T> implements QueueWithRep<T> {
 			throw new NoSuchElementException();
 			
 		} else {
-			if(empieza.getTimes() <= times) {
+			if(aux.getTimes() <= times) {
 				throw new IllegalArgumentException();
 			}	
-			empieza.setTimes(empieza.getTimes() - times);
+			aux.setTimes(aux.getTimes() - times);
 		}	
 	}
 
@@ -205,10 +199,11 @@ public class LinkedQueueWithRepImpl<T> implements QueueWithRep<T> {
 		if(element == null) 
 			throw new NullPointerException();
 		
-		Iterator<T> iterador = this.iterator();
-		while(iterador.hasNext() == true) {
+		QueueWithRepNode<T> aux = this.front;
+			
+		while(aux.next != null) {
 
-			if(iterador.next().equals(element)) {
+			if(aux.elem.equals(element)) {
 				return true;
 			}
 		}
@@ -219,13 +214,14 @@ public class LinkedQueueWithRepImpl<T> implements QueueWithRep<T> {
 	@Override
 	public long size() {
 		//todo
-		long longitud = 0;
-		
-		Iterator<T> iterador = this.iterator();
-		while(iterador.hasNext() != false) {
-			longitud += verNodo(iterador.next()).getTimes();
+		long length = 0;
+		QueueWithRepNode<T> aux = this.front;
+			
+		while(aux.next != null) {
+
+			length += 1;
 		}
-		return longitud;
+		return length;
 	}
 
 	@Override
@@ -239,10 +235,10 @@ public class LinkedQueueWithRepImpl<T> implements QueueWithRep<T> {
 	public void clear() {
 		//todo
 		
-		QueueWithRepNode<T> empieza = this.front;
+		QueueWithRepNode<T> aux = this.front;
 		while(this.front != null) {
 			this.front = front.getNext();
-			empieza = null;
+			aux = null;
 		}
 		
 		this.count = 0;
@@ -255,16 +251,17 @@ public class LinkedQueueWithRepImpl<T> implements QueueWithRep<T> {
 		if(element == null) 
 			throw new NullPointerException();
 		
-		int longitud = 0;
-		Iterator<T> iterador = this.iterator();
-		while(iterador.hasNext() == true) {
+		int length = 0;
+		QueueWithRepNode<T> aux = this.front;
+			
+		while(aux.next != null) {
 
-			T siguiente = iterador.next();
-			if(siguiente.equals(element)) {
-				longitud = verNodo(siguiente).getTimes();
+			if(aux.elem.equals(element)) {
+				length = aux.elem.getTimes();
 			}
 		}
-		return longitud;
+
+		return length;
 	
 	}
 	
@@ -275,38 +272,39 @@ public class LinkedQueueWithRepImpl<T> implements QueueWithRep<T> {
 	}
 	
 	public QueueWithRepNode<T> verNodo(T element) {
-		QueueWithRepNode<T> empieza = this.front;
-		while(empieza != null) {
-			if(empieza.getElement().equals(element)) {
-				return empieza;
+		QueueWithRepNode<T> aux = this.front;
+		while(aux != null) {
+			if(aux.getElement().equals(element)) {
+				return aux;
 			}
-			empieza = front.getNext();
+			aux = front.next;
 		}
-		return empieza;
+		return aux;
 	}
 
 
 	@Override
 	public String toString() {
 		
-		StringBuffer buffer = new StringBuffer();
+		StringBuffer output = new StringBuffer();
 		
-		buffer.append("(");
+		output.append("(");
 		
-		QueueWithRepNode<T> empieza = this.front;
+		QueueWithRepNode<T> aux = this.front;
 		
-		while(empieza != null) {
-			for(int w = 0; w < empieza.getTimes(); w++) {
-				buffer.append(empieza.getElement() + " ");
+		while(aux != null) {
+			for(int i = 0; i < aux.getTimes(); i++) {
+				output.append(aux.getElement() + " ");
 			}
-			empieza = empieza.getNext();
+			aux = aux.next;
 		}
 		
 		// TODO Ir añadiendo en buffer las cadenas para la representación de la cola. Ejemplo: (A, A, A, B )
 		
 		
-		buffer.append(")");
-		return buffer.toString();
+		output.append(")");
+		return output.toString();
+		
 	}
 
 }
