@@ -58,7 +58,7 @@ public void antesDe() {
 		Assert.assertTrue(listaConElems.contains("B"));
 		Assert.assertTrue(listaConElems.contains("B"));
 		Assert.assertTrue(listaConElems.contains("D"));
-		Assert.assertFalse(listaConElems.contains("Z"));
+		Assert.assertFalse(listaConElems.contains("D"));
 		
 	}
 	
@@ -100,25 +100,25 @@ public void antesDe() {
 	}
 
 	@Test (expected = NullPointerException.class)
-	public void containsBadTest() throws NullPointerException {
+	public void containsNullTest() throws NullPointerException {
 		listaConElems.contains(null);
 	}
 
 	@Test (expected = NullPointerException.class)
-	public void insertFirstBadTest() throws NullPointerException {
+	public void insertFirstNullTest() throws NullPointerException {
 		listaConElems.insertFirst(null);
 	}
 	
 	@Test (expected = NullPointerException.class)
-	public void insertLastBadTest() throws NullPointerException {
+	public void insertLastNullTest() throws NullPointerException {
 		listaConElems.insertLast(null);
 	}
 	
 	@Test
 	public void insertLastTest() throws NullPointerException {
-		lv.insertLast("D");
-		lv.insertLast("A");
-		Assert.assertEquals(lv.toString(), "(D A )");
+		lv.insertLast("Z");
+		lv.insertLast("J");
+		Assert.assertEquals(lv.toString(), "(Z J )");
 	}
 	
 	@Test
@@ -130,7 +130,7 @@ public void antesDe() {
 	}
 	
 	@Test
-	public void removeFirstTest2() throws EmptyCollectionException {
+	public void removeFirstTest1Elem() throws EmptyCollectionException {
 		lv.insertLast("D");
 		Assert.assertEquals(lv.toString(), "(D )");
 		lv.removeFirst();
@@ -138,7 +138,7 @@ public void antesDe() {
 	}
 	
 	@Test (expected = EmptyCollectionException.class)
-	public void removeFirstBadTest() throws EmptyCollectionException {
+	public void removeFirstEmptyTest() throws EmptyCollectionException {
 		lv.removeFirst();
 	}
 	
@@ -151,7 +151,7 @@ public void antesDe() {
 	}
 	
 	@Test
-	public void removeLastTest2() throws EmptyCollectionException {
+	public void removeLastTest1Elem() throws EmptyCollectionException {
 		lv.insertLast("D");
 		Assert.assertEquals(lv.toString(), "(D )");
 		lv.removeLast();
@@ -159,7 +159,7 @@ public void antesDe() {
 	}
 	
 	@Test (expected = EmptyCollectionException.class)
-	public void removeLastBadTest() throws EmptyCollectionException {
+	public void removeLastEmptyTest() throws EmptyCollectionException {
 		lv.removeLast();
 	}
 	
@@ -176,78 +176,79 @@ public void antesDe() {
 	
 	@Test
 	public void toStringFromUntilTest() {
-		Assert.assertEquals(listaConElems.toStringFromUntil(55, 60), "()");
+		Assert.assertEquals(listaConElems.toStringFromUntil(11, 15), "()");
 		Assert.assertEquals(listaConElems.toStringFromUntil(1, 3), "(A B C )");
-		Assert.assertEquals(listaConElems.toStringFromUntil(3, 10), "(C A B D )");
-		Assert.assertEquals(listaConElems.toStringFromUntil(2, 5), "(B C A B )");
 		Assert.assertEquals(listaConElems.toStringFromUntil(3, 4), "(C A )");
+		Assert.assertEquals(listaConElems.toStringFromUntil(2, 5), "(B C A B )");
+		Assert.assertEquals(listaConElems.toStringFromUntil(1, 4), "(A B C A )");
 		Assert.assertEquals(listaConElems.toStringFromUntil(3, 6), "(C A B D )");
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
-	public void toStringFromUntilBadTest() throws IllegalArgumentException {
-		listaConElems.toStringFromUntil(0, 55);
+	public void toStringFrom0UntilTest() throws IllegalArgumentException {
+		listaConElems.toStringFromUntil(0, 21);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
-	public void toStringFromUntilBadTest2() throws IllegalArgumentException {
-		listaConElems.toStringFromUntil(1, 0);
+	public void toStringFromUntilBad0Test() throws IllegalArgumentException {
+		listaConElems.toStringFromUntil(4, 0);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
-	public void toStringFromUntilBadTest3() throws IllegalArgumentException {
-		listaConElems.toStringFromUntil(10, 5);
+	public void toStringFromBiggerThanUntilTest() throws IllegalArgumentException {
+		listaConElems.toStringFromUntil(19, 2);
 	}
 	
 	@Test
 	public void insertarPosTest() {
 
-		listaConElems.insertPos("Z", 3);
-		Assert.assertEquals(listaConElems.toString(), "(A B Z C A B D )");
+		listaConElems.insertPos("X", 3);
+		Assert.assertEquals(listaConElems.toString(), "(A B X C A B D )");
 
-		listaConElems.insertPos("Z", 1);
-		Assert.assertEquals(listaConElems.toString(), "(Z A B Z C A B D )");
+		listaConElems.insertPos("A", 1);
+		Assert.assertEquals(listaConElems.toString(), "(A A B Z C A B D )");
 
-		listaConElems.insertPos("W", 2);
-		Assert.assertEquals(listaConElems.toString(), "(Z W A B Z C A B D )");
+		listaConElems.insertPos("M", 2);
+		Assert.assertEquals(listaConElems.toString(), "(Z M A B Z C A B D )");
 
-		listaConElems.insertPos("W", 55);
+		listaConElems.insertPos("W", 66);
 		Assert.assertEquals(listaConElems.toString(), "(Z W A B Z C A B D W )");
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
-	public void insertarPosBadTest() throws IllegalArgumentException {
-		listaConElems.insertPos("Z", -3);
+	public void insertarNegativePosTest() throws IllegalArgumentException {
+		listaConElems.insertPos("Z", -1);
 	}
 	
 	@Test (expected = NullPointerException.class)
-	public void insertarPosBadTest2() throws NullPointerException {
-		listaConElems.insertPos(null, 1);
+	public void insertarNullElemPosTest() throws NullPointerException {
+		listaConElems.insertPos(null, 4);
 	}
 
 	@Test
 	public void insertarBeforeTest() {
-		listaConElems.insertBefore("Z", "A");
-		Assert.assertEquals(listaConElems.toString(), "(Z A B C A B D )");
-		listaConElems.insertBefore("W", "D");
-		Assert.assertEquals(listaConElems.toString(), "(Z A B C A B W D )");
-		listaConElems.insertBefore("W", "B");
-		Assert.assertEquals(listaConElems.toString(), "(Z A W B C A B W D )");
+		
+		listaConElems.insertBefore("B", "A");
+		Assert.assertEquals(listaConElems.toString(), "(B A B C A B D )");
+		listaConElems.insertBefore("L", "B");
+		Assert.assertEquals(listaConElems.toString(), "(Z A B C A L B D )");
+		listaConElems.insertBefore("X", "Z");
+		Assert.assertEquals(listaConElems.toString(), "(X Z A B C A B W D )");
 	}
 	
 	@Test (expected = NullPointerException.class)
-	public void insertarBeforeBadTest() throws NullPointerException {
-		listaConElems.insertBefore(null, "A");
+	public void insertarBeforeNullElemTest() throws NullPointerException {
+		listaConElems.insertBefore(null, "K");
 	}
 	
 	@Test (expected = NullPointerException.class)
-	public void insertarBeforeBadTest2() throws NullPointerException {
-		listaConElems.insertBefore("A", null);
+	public void insertarBeforeNullTimesTest() throws NullPointerException {
+		listaConElems.insertBefore("P", null);
 	}
 	
 	@Test (expected = NoSuchElementException.class)
-	public void insertarBeforeBadTest3() throws NoSuchElementException {
-		listaConElems.insertBefore("A", "W");
+	public void insertarBeforeNoSuchElemTest() throws NoSuchElementException {
+		listaConElems.insertBefore("F", "W");
 	}
 
 	@Test
@@ -259,12 +260,12 @@ public void antesDe() {
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
-	public void getElmPosBadTest() throws IllegalArgumentException {
+	public void getElmPos0Test() throws IllegalArgumentException {
 		listaConElems.getElemPos(0);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
-	public void getElmPosBadTest2() throws IllegalArgumentException {
+	public void getElmPosOFBTest() throws IllegalArgumentException {
 		listaConElems.getElemPos(55);
 	}
 
@@ -277,13 +278,13 @@ public void antesDe() {
 	}
 
 	@Test (expected = NullPointerException.class)
-	public void getPosFirtsBadTest() throws NullPointerException {
+	public void getPosFirtsNullTest() throws NullPointerException {
 		listaConElems.getPosFirst(null);
 	}
 
 	@Test (expected = NoSuchElementException.class)
-	public void getPosFirtsBadTest2() throws NoSuchElementException {
-		listaConElems.getPosFirst("W");
+	public void getPosFirtsNoSuchElementTest() throws NoSuchElementException {
+		listaConElems.getPosFirst("L");
 	}
 
 	@Test
@@ -295,13 +296,13 @@ public void antesDe() {
 	}
 
 	@Test (expected = NullPointerException.class)
-	public void getPosLastBadTest() throws NullPointerException {
+	public void getPosLastNullTest() throws NullPointerException {
 		listaConElems.getPosLast(null);
 	}
 
 	@Test (expected = NoSuchElementException.class)
-	public void getPosLastBadTest2() throws NoSuchElementException {
-		listaConElems.getPosLast("W");
+	public void getPosLastNoSuchElementTest() throws NoSuchElementException {
+		listaConElems.getPosLast("X");
 	}
 	
 	@Test
@@ -323,41 +324,41 @@ public void antesDe() {
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
-	public void removePosBadTest() throws IllegalArgumentException {
+	public void removePos0Test() throws IllegalArgumentException {
 		listaConElems.removePos(0);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
-	public void removePosBadTest2() throws IllegalArgumentException {
-		listaConElems.removePos(44);
+	public void removePosOFBTest() throws IllegalArgumentException {
+		listaConElems.removePos(99);
 	}
 
 	@Test (expected = NullPointerException.class)
-	public void removeAllBadTest() throws NullPointerException {
+	public void removeAllNullTest() throws NullPointerException {
         listaConElems.removeAll(null);
 	}
 
 	@Test (expected = NoSuchElementException.class)
-	public void removeAllBadTest2() throws NoSuchElementException {
-        listaConElems.removeAll("Z");
+	public void removeAllNoSuchElementTest() throws NoSuchElementException {
+        listaConElems.removeAll("R");
 	}
 	
 	@Test
 	public void maxRepeatedTest() {
 		lv.insertFirst("A");
-		lv.insertFirst("C");
-		lv.insertFirst("A");
 		lv.insertFirst("B");
-		lv.insertFirst("S");
-		lv.insertFirst("Z");
-		lv.insertFirst("A");
-		lv.insertFirst("A");
-		Assert.assertEquals(lv.maxRepeated(), 4);
+		lv.insertFirst("C");
+		lv.insertFirst("T");
+		lv.insertFirst("T");
+		lv.insertFirst("T");
+		lv.insertFirst("T");
+		lv.insertFirst("T");
+		Assert.assertEquals(lv.maxRepeated(), 5);
 	}
 	
 	@Test
 	public void maxRepeatedTest2() {
-		lv.insertFirst("A");
+		lv.insertFirst("M");
 		Assert.assertEquals(lv.maxRepeated(), 1);
 	}
 	
@@ -407,7 +408,7 @@ public void antesDe() {
 	}
 	
 	@Test (expected = NullPointerException.class)
-	public void isEqualsBadTest() throws NullPointerException {
+	public void isEqualsNullTest() throws NullPointerException {
 		Assert.assertTrue(listaConElems.isEquals(null));	
 	}
 	
@@ -419,12 +420,12 @@ public void antesDe() {
 	}
 	
 	@Test (expected = NullPointerException.class)
-	public void containsAllBadTest() throws NullPointerException {
+	public void containsAllNullTest() throws NullPointerException {
 		Assert.assertTrue(listaConElems.containsAll(null));	
 	}
 	
 	@Test (expected = NullPointerException.class)
-	public void isSubListBadTest() throws NullPointerException {
+	public void isSubListNullTest() throws NullPointerException {
 		Assert.assertTrue(listaConElems.isSubList(null));	
 	}
 	
