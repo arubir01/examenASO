@@ -138,14 +138,14 @@ public class World extends AbstractBinaryTreeADT<LinkedList<Entity>> {
 			setWorldRight(createEmptyWorld());
 			
 			if(size == 0) {
-				LinkedList<Entity> lista = new LinkedList<Entity>();
-				lista.add(e);
-				setContent(lista);
+				LinkedList<Entity> list = new LinkedList<Entity>();
+				list.add(e);
+				setContent(list);
 				
 			} else {
-				LinkedList<Entity> lista = new LinkedList<Entity>();
-				lista.add(new Entity(Entity.UNKNOWN));
-				setContent(lista);
+				LinkedList<Entity> list = new LinkedList<Entity>();
+				list.add(new Entity(Entity.UNKNOWN));
+				setContent(list);
 				
 				if(address.charAt(0) == '0') {
 					getWorldLeft().insert(address.substring(1), e);
@@ -156,43 +156,47 @@ public class World extends AbstractBinaryTreeADT<LinkedList<Entity>> {
 			}
 			
 		} else {
+			//si esta
 			if(size == 0) {
-				LinkedList<Entity> lista = this.getContent();
 				
-				boolean encontrado = false;
-				Iterator<Entity> it = lista.iterator();
+				LinkedList<Entity> list = this.getContent();
+				
+				boolean found = false;
+				Iterator<Entity> iter = list.iterator();
 					
-				while(it.hasNext()) {
+				while(iter.hasNext()) {
 						
 					Entity element = it.next();
 					if(element.equals(e)) {
 						element.setCount(element.getCount() + e.getCount());
-						encontrado = true;
+						found = true;
 					}
 				}
 				
 				if(encontrado == false) {
-					lista.add(e);
+					list.add(e);
 				}
+				
 			} else {
 				if(address.charAt(0) == '0') {
+					
 					getWorldLeft().insert(address.substring(1), e);
 					
 				} else {
+					
 					getWorldRight().insert(address.substring(1), e);
 				}
 			}
 		}
 	}
 
-	
-	
 	/**
 	 * Indica cuÃ¡ntas entidades del tipo hay en este mundo (en el Ã¡rbol completo).
 	 * 
 	 * @param type tipo de entidad.
 	 * @return cuÃ¡ntas entidades de ese tipo hay en este Ã¡rbol.
 	 */
+	
 	public long countEntity(int type) {
 		// TODO Implementar el mÃ©todo	
 		
@@ -200,19 +204,25 @@ public class World extends AbstractBinaryTreeADT<LinkedList<Entity>> {
 			return 0;
 			
 		} else {
-			LinkedList<Entity> lista = this.getContent();
-			Iterator<Entity> it = lista.iterator();
-			long contador = 0;
 			
-			while(it.hasNext()) {
+			LinkedList<Entity> list = this.getContent();
+			Iterator<Entity> iter = list.iterator();
+			
+			long counter = 0;
+			
+			while(iter.hasNext()) {
 					
-				Entity element = it.next();
+				Entity element = iter.next();
+				
 				if(element.is(type)) {
-					contador = element.getCount();
+					
+					counter = element.getCount();
 				}
 			}
 			
-			return (contador + getWorldLeft().countEntity(type) + getWorldRight().countEntity(type));
+			counter += getWorldLeft().countEntity(type) + getWorldRight().countEntity(type):
+			
+			return counter;
 		}
 	}
 	
@@ -243,40 +253,46 @@ public class World extends AbstractBinaryTreeADT<LinkedList<Entity>> {
 	public long countAccesiblePrincess(List<String> lista){
 		// TODO IMPLEMENTAR EL MÃ‰TODO
 		
+		//arbol vacio
+		
 		if(this.getContent() == null) {
 			return 0;
 			
 		} else {
-			LinkedList<Entity> listado = this.getContent();
-			Iterator<Entity> it = listado.iterator();
-			long contador = 0;
-			long princesas = 0;
 			
-			boolean hayDragon = false, hayCastillo = false;
+			LinkedList<Entity> list = this.getContent();
+			Iterator<Entity> iter = list.iterator();
 			
-			while(it.hasNext()) {
+			long counter = 0;
+			long princess = 0;
+			
+			boolean dragon = false, castle = false;
+			
+			while(iter.hasNext()) {
 					
-				Entity element = it.next();
+				Entity element = iter.next();
 				
 				if(element.is(Entity.DRAGON)) {
-					hayDragon = true;
+					dragon = true;
 					
 				} else if(element.is(Entity.CASTLE)) {
-					hayCastillo = true;
+					castle = true;
 					
 				} else if(element.is(Entity.PRINCESS)) {
-					princesas = element.getCount();
+					princess = element.getCount();
 				}
 			}
 
-			if(hayDragon == false || (hayDragon == true && hayCastillo == true)) {
-				contador = princesas;		
+			if(dragon == false || (dragon == true && castle == true)) {
+				counter = princess;		
 				
-			} else if(hayDragon == true) {
+			} else if(dragon == true) {
 				return 0;
 			}
 			
-			return (contador + getWorldLeft().countAccesiblePrincess(lista) + getWorldRight().countAccesiblePrincess(lista));
+			counter += getWorldLeft().countAccesiblePrincess(list) + getWorldRight().countAccesiblePrincess(list);
+			
+			return counter;
 		}
 	}	
 	
@@ -284,37 +300,50 @@ public class World extends AbstractBinaryTreeADT<LinkedList<Entity>> {
 	
 	@Override
 	public String toString() {
-		if (! isEmpty()) {
+		
+		//si no esta vacio
+		
+		if (!isEmpty()) {
 			//	Construye el resultado de forma eficiente
-			StringBuffer result = new StringBuffer();
+			StringBuffer output = new StringBuffer();
 				
 			//	RaÃ­z: Ordena la lista de entidades alfabeticamente
-			Collections.sort(content);
-			result.append("{" + content.toString());
 			
-			if (! tags.isEmpty()) {
-				result.append(" [");
+			Collections.sort(content);
+			output.append("{" + content.toString());
+			
+			if (!tags.isEmpty()) {
+				output.append(" [");
 				
-				List<String> sk = new LinkedList<String>(tags.keySet());
+				List<String> setKey = new LinkedList<String>(tags.keySet());
 				
-				Collections.sort(sk);
-				for (String k : sk) {
-					result.append("(" + k + ", " + tags.get(k) + "), ");
+				Collections.sort(setKey);
+				
+				for (String k = ""; k < setKey.size(); k++) {
+					
+					output.append("(" + k + ", " + tags.get(k) + "), ");
+					
 				}
-				result.delete(result.length() - 2, result.length());
-				result.append("]");
+				
+				output.delete(result.length() - 2, result.length());
+				output.append("]");
 			}
 			
 			//	Y cada sub-Ã¡rbol
 			for (int i = 0; i < getMaxDegree(); i++) {
-				result.append(", " + getSubtree(i).toString());
+				
+				output.append(", " + getSubtree(i).toString());
+				
 			}
 			//	Cierra la "}" de este Ã¡rbol
-			result.append("}");
+			output.append("}");
 			
-			return result.toString();
+			return output.toString();
+			
 		} else {
+			//si esta vacio 
 			return AbstractTreeADT.EMPTY_TREE_MARK;
+			
 		}
 	}
 
